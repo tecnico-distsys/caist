@@ -14,11 +14,11 @@
 
 #constants
 NOW=$(date +"%Y_%m_%d__%H_%M_%S")
-CA_ALIAS="CA-Distributed-Systems-2017"
+CA_ALIAS="DistSys_CertificationAuthority"
 CA_CERTIFICATE_PASS="3v9xZUEHG45gbTGGn0"
 
 CA_CSR_FILE="ca.csr"
-SUBJ="/CN=DistributedSystems/OU=DEI/O=IST/L=Lisbon/C=PT"
+SUBJ="/CN=DistSys_CertificationAuthority/OU=DEI/O=IST/L=Lisbon/C=PT"
 KEYS_VALIDITY=1095
 OUTPUT_FOLDER="keys_$NOW"
 CA_FOLDER="$OUTPUT_FOLDER/ca"
@@ -43,7 +43,7 @@ function generate_signed_certificates(){
   echo "Creating keys for user '$name_of_certificate' using password '$password' "
 
   d_name="CN=$name_of_certificate,OU=DEI,O=IST,L=Lisbon,S=Lisbon,C=PT"
-  server_keystore_file="$server_folder/$server_name.jks"
+  server_keystore_file="$server_folder/$name_of_certificate.jks"
   csr_file="$server_folder/$name_of_certificate.csr"
   echo "Generating keypair of $name_of_certificate..."
   keytool -keystore $server_keystore_file -genkey -alias $name_of_certificate -keyalg RSA -keysize 2048 -keypass $password -validity $KEYS_VALIDITY -storepass $password  -dname $d_name
