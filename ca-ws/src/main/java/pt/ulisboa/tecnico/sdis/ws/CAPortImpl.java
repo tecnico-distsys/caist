@@ -3,6 +3,9 @@ package pt.ulisboa.tecnico.sdis.ws;
 import java.security.cert.CertificateEncodingException;
 
 import javax.jws.WebService;
+
+import pt.ist.certlib.CAUtils;
+
 import java.security.cert.Certificate;
 
 @WebService(endpointInterface = "pt.ulisboa.tecnico.sdis.ws.CA")

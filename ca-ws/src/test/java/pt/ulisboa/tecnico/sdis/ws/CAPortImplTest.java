@@ -9,8 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import pt.ist.certlib.CAUtils;
 import pt.ulisboa.tecnico.sdis.ws.CAPortImpl;
-import pt.ulisboa.tecnico.sdis.ws.CAUtils;
 
 /**
  * Unit Test suite The purpose of this class is to test CalcPort locally.

@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.sdis.ws;
+package pt.ist.certlib;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -17,7 +17,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 
-import org.apache.commons.logging.impl.ServletContextCleaner;
+
 
 public class CAUtils {
 
