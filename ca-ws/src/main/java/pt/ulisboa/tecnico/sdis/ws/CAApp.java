@@ -2,8 +2,6 @@ package pt.ulisboa.tecnico.sdis.ws;
 
 import java.io.File;
 
-import pt.ist.certlib.CAUtils;
-
 public class CAApp {
 
 	public static void main(String[] args) throws Exception {

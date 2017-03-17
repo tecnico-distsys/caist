@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.sdis.ws;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.security.cert.Certificate;
 
@@ -9,8 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pt.ist.certlib.CAUtils;
-import pt.ulisboa.tecnico.sdis.ws.CAPortImpl;
+import pt.ist.certlib.CertificateUtils;
 
 /**
  * Unit Test suite The purpose of this class is to test CalcPort locally.
@@ -35,9 +33,10 @@ public class CAPortImplTest {
 
 	@Test
 	public void testGetCertificate() throws Exception {
-		byte[] certificateBytes = localPort.getCertificate("U01_Supplier1");
+		String certificateString = localPort.getCertificate("U01_Supplier1");
 
-		Certificate certificate = CAUtils.getCertificateFromBytes(certificateBytes);
+		Certificate certificate = CertificateUtils.getCertificateFromString(certificateString);
+
 		boolean isCertificateNull = certificate == null;
 		assertFalse(isCertificateNull);
 

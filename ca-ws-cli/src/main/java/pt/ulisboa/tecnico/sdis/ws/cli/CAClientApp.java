@@ -1,7 +1,9 @@
 package pt.ulisboa.tecnico.sdis.ws.cli;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
-import java.io.*;
 
 public class CAClientApp {
 	
@@ -56,8 +58,8 @@ public class CAClientApp {
 					String certName = commandArgs[i];
 					try {
 						System.out.printf("Retrieving certificate %s from server%n", certName);
-						byte[] result = client.getCertificate(certName);
-						System.out.printf("Received %d bytes%n", result.length);
+						String result = client.getCertificate(certName);
+						System.out.printf("Received %s %n", result);
 						String fileName = certName + ".cer";
 						System.out.printf("Writing to file %s%n", fileName);
 						writeFile(fileName, result);
@@ -74,10 +76,11 @@ public class CAClientApp {
 		keyboardSc.close();
 	}
 
-	private static void writeFile(String fileName, byte[] result) throws IOException {
-		FileOutputStream fos = new FileOutputStream(fileName);
-		fos.write(result);
-		fos.close();
+	private static void writeFile(String fileName, String result) throws IOException {
+		BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
+		
+		bw.write(result);
+		bw.close();
 	}
 
 }

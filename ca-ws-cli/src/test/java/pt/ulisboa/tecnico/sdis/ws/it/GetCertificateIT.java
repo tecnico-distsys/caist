@@ -9,7 +9,7 @@ import java.security.cert.Certificate;
 import org.junit.Before;
 import org.junit.Test;
 
-import pt.ulisboa.tecnico.sdis.ws.cli.CertificateUtils;
+import pt.ist.certlib.CertificateUtils;
 
 /**
  * Test suite
@@ -31,9 +31,9 @@ public class GetCertificateIT extends BaseIT {
 	 */
 	@Test
 	public void validateGetExistingCertificate() {
-		byte[] certificateBytes = CLIENT.getCertificate("TESTE_Mediator");
-		assertNotNull(certificateBytes);
-		assertTrue(CertificateUtils.getCertificateFromBytes(certificateBytes) instanceof Certificate);
+		String certificateString = CLIENT.getCertificate("TESTE_Mediator");
+		assertNotNull(certificateString);
+		assertTrue(CertificateUtils.getCertificateFromString(certificateString) instanceof Certificate);
 	}
 
 	/**

@@ -7,6 +7,6 @@ import javax.jws.WebService;
 @WebService
 public interface CA {
 
-	@WebResult(name="certificateBytes") byte[] getCertificate(@WebParam(name="certificateName") String certificateName);
+	@WebResult(name="certificateBytes") String getCertificate(@WebParam(name="certificateName") String certificateName);
 
 }

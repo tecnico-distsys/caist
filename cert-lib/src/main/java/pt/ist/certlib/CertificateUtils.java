@@ -1,14 +1,13 @@
 package pt.ist.certlib;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
@@ -16,22 +15,12 @@ import java.security.SignatureException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.util.List;
 
-
-
-public class CAUtils {
+public class CertificateUtils {
 
 	/** path for the directory containing all the certificates */
 	private static String certificatesDirectory = null;
-
-	/** path for the certificate file of the CA */
-	private static String caCertificateFile = null;
-
-	/**
-	 * public key of the CA. It is read from a file only once and, after that,
-	 * it is kept in memory
-	 */
-	private static PublicKey publicKey = null;
 
 	/**
 	 * Returns the public key from a certificate
@@ -53,7 +42,7 @@ public class CAUtils {
 	 *            Should be in this format: u01_Supplier1 or u01-Mediator
 	 * @return
 	 */
-	public static Certificate getCertificate(String certificateName) {
+	public static String getCertificate(String certificateName) {
 		if (!certificateName.contains("_")) {
 			return null;
 		}
@@ -70,13 +59,13 @@ public class CAUtils {
 		return readCertificateFile(certificateFilePath);
 	}
 
-	public static Certificate getCACertificate() {
+	public static String getCACertificate() {
 		return readCertificateFile(getCaCertificateFilePath());
 	}
 
 	public static String getCertificatesDirectory() {
 		if (certificatesDirectory == null) {
-			ClassLoader classLoader = CAUtils.class.getClassLoader();
+			ClassLoader classLoader = CertificateUtils.class.getClassLoader();
 			certificatesDirectory = classLoader.getResource("certificates").getFile();
 		}
 
@@ -87,9 +76,8 @@ public class CAUtils {
 	public static String getCaCertificateFilePath() {
 		return getCertificatesDirectory() + "/" + "ca/ca-certificate.pem.txt";
 	}
-	
-	
-	public static void setCertificatesDirectory(String newCertificatesDirectory){
+
+	public static void setCertificatesDirectory(String newCertificatesDirectory) {
 		certificatesDirectory = newCertificatesDirectory;
 	}
 
@@ -101,43 +89,29 @@ public class CAUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Certificate readCertificateFile(String filePath) {
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(filePath);
-		} catch (FileNotFoundException e) {
-			System.err.println("Certificate file <" + filePath + "> not found.");
+	public static String readCertificateFile(String filePathString) {
+		File file = null;
+
+		file = new File(filePathString);
+
+		if (!file.exists()) {
+			System.err.println("Certificate file <" + filePathString + "> not found.");
 			return null;
 		}
 
-		BufferedInputStream bis = null;
+		String certificateString = "";
+		Path filePath = Paths.get(filePathString);
 		try {
-			bis = new BufferedInputStream(fis);
-
-			CertificateFactory cf = null;
-			cf = CertificateFactory.getInstance("X.509");
-
-			if (bis.available() > 0) {
-				Certificate cert = cf.generateCertificate(bis);
-				return cert;
-				// It is possible to print the content of the certificate file:
-				// System.out.println(cert.toString());
+			List<String> fileLines = Files.readAllLines(filePath);
+			for (String line : fileLines) {
+				certificateString += line + "\n";
 			}
 
-		} catch (Exception e) {
-			System.err.println("Caught exception when reading certificate file <" + filePath + ">.");
-			e.printStackTrace(System.err);
-		} finally {
-			try {
-				if (bis != null)
-					bis.close();
-				if (fis != null)
-					fis.close();
-			} catch (IOException ioe) {
-				// ignore exception
-			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
 		}
-		return null;
+
+		return certificateString;
 	}
 
 	/** auxiliary method to calculate digest from text and cipher it */
@@ -173,41 +147,6 @@ public class CAUtils {
 	}
 
 	/**
-	 * Verifica se um certificado foi devidamente assinado pela CA
-	 * 
-	 * @param certificate
-	 *            certificado a ser verificado
-	 * @param caPublicKey
-	 *            certificado da CA
-	 * @return true se foi devidamente assinado
-	 */
-	public static boolean verifySignedCertificate(Certificate certificate) {
-		if (certificate == null) {
-			return false;
-		}
-		if (publicKey == null) {
-			publicKey = getPublicKeyFromCertificate(getCACertificate());
-		}
-
-		try {
-			certificate.verify(publicKey);
-		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
-				| SignatureException e) {
-			// O método Certifecate.verify() não retorna qualquer valor (void).
-			// Quando um certificado é inválido, isto é, não foi devidamente
-			// assinado pela CA
-			// é lançada uma excepção: java.security.SignatureException:
-			// Signature does not match.
-			// também são lançadas excepções caso o certificado esteja num
-			// formato incorrecto ou tenha uma
-			// chave inválida.
-
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * Converts a byte array to a Certificate object. Returns null if the bytes
 	 * do not correspond to a certificate.
 	 * 
@@ -229,4 +168,31 @@ public class CAUtils {
 		}
 
 	}
+
+	/**
+	 * Returns a Certificate object given a string with a certificate in the PEM
+	 * format
+	 * 
+	 * @param certificateString
+	 *            the String with the certificate
+	 * @return the Certificate
+	 */
+	public static Certificate getCertificateFromString(String certificateString) {
+		InputStream is = new ByteArrayInputStream(certificateString.getBytes(StandardCharsets.UTF_8));
+		CertificateFactory cf;
+		try {
+			cf = CertificateFactory.getInstance("X.509");
+
+			Certificate certificate;
+
+			certificate = cf.generateCertificate(is);
+			return certificate;
+		} catch (CertificateException e) {
+			e.printStackTrace();
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
 }
