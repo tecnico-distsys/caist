@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
     <!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
-    <groupId>example</groupId>
-    <artifactId>cert-lib</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>pt.ulisboa.tecnico.sdis</groupId>
+    <artifactId>cert-util</artifactId>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -17,5 +17,15 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <!-- JUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
