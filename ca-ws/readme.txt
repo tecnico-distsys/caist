@@ -43,19 +43,13 @@ including code generated from the WSDL.
 To configure the project in Eclipse:
 -----------------------------------
 
-If Eclipse files (.project, .classpath) exist:
-    'File', 'Import...', 'General'-'Existing Projects into Workspace'
-    'Select root directory' and 'Browse' to the project base folder.
-    Check if everything is OK and 'Finish'.
-
-If Eclipse files do not exist:
-    'File', 'Import...', 'Maven'-'Existing Maven Projects'.
-    'Browse' to the project base folder.
-    Check that the desired POM is selected and 'Finish'.
+'File', 'Import...', 'Maven'-'Existing Maven Projects'.
+'Browse' to the project base folder.
+Check that the desired POM is selected and 'Finish'.
 
 
 --
-Revision date: 2017-02-13
+Revision date: 2017-04-16
 leic-sod@disciplinas.tecnico.ulisboa.pt
  
   
