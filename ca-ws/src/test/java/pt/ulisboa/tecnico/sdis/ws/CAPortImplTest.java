@@ -1,14 +1,16 @@
 package pt.ulisboa.tecnico.sdis.ws;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import java.io.File;
 import java.security.cert.Certificate;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pt.ist.certlib.CertificateUtils;
+import pt.ulisboa.tecnico.sdis.cert.CertUtil;
 
 /**
  * Unit Test suite The purpose of this class is to test CalcPort locally.
@@ -23,7 +25,7 @@ public class CAPortImplTest {
 
 	@Before
 	public void setUp() {
-		localPort = new CAPortImpl();
+		localPort = new CAPortImpl(new File("./src/test/resources"));
 	}
 
 	@After
@@ -33,42 +35,46 @@ public class CAPortImplTest {
 
 	@Test
 	public void testGetCertificate() throws Exception {
-		String certificateString = localPort.getCertificate("U01_Supplier1");
-
-		Certificate certificate = CertificateUtils.getCertificateFromString(certificateString);
-
-		boolean isCertificateNull = certificate == null;
-		assertFalse(isCertificateNull);
-
+		String certificateString = localPort.getCertificate("CXX_Service1");
+		assertNotNull(certificateString);
+		Certificate certificate = CertUtil.getX509CertificateFromPEMString(certificateString);
+		assertNotNull(certificate);
 	}
 
-	// /**
-	// * O objectivo deste teste é verificar se a CA confirma que
-	// u01-fornecedor-1
-	// * é um certificado válido.
-	// *
-	// * @throws Exception
-	// */
-	// @Test
-	// public void testisValidCertificateValid() throws Exception {
-	// Certificate validCertificate =
-	// CAUtils.readCertificateFile("src/test/resources/u01/u01-fornecedor-1.cer");
-	// assertTrue(localPort.isCertificateValid(validCertificate.getEncoded()));
-	// }
-	//
-	// /**
-	// * O objectivo deste teste é verificar se a CA confirma que
-	// u02-fornecedor-1
-	// * é um certificado válido. (não é porque foi assinado por outra
-	// entidade).
-	// *
-	// * @throws Exception
-	// */
-	// @Test
-	// public void testisValidCertificateInvalid() throws Exception {
-	// Certificate validCertificate =
-	// CAUtils.readCertificateFile("src/test/resources/u02/u02-fornecedor-1.cer");
-	// assertFalse(localPort.isCertificateValid(validCertificate.getEncoded()));
-	// }
+	@Test
+	public void testGetCertificateDoesNotExist() throws Exception {
+		String certificateString = localPort.getCertificate("CXX_Service9");
+		assertNull(certificateString);
+	}
+
+	@Test
+	public void testGetCertificateNull() throws Exception {
+		String certificateString = localPort.getCertificate(null);
+		assertNull(certificateString);
+	}
+
+	@Test
+	public void testGetCertificateEmpty() throws Exception {
+		String certificateString = localPort.getCertificate("");
+		assertNull(certificateString);
+	}
+
+	@Test
+	public void testGetCertificateWrongName() throws Exception {
+		String certificateString = localPort.getCertificate("DoesNotExist");
+		assertNull(certificateString);
+	}
+
+	@Test
+	public void testGetCertificateDirTraversal() throws Exception {
+		String certificateString = localPort.getCertificate("./src/test/resources/CXX_Service1.cer");
+		assertNull(certificateString);
+	}
+
+	@Test
+	public void testGetCertificateParentDirTraversal() throws Exception {
+		String certificateString = localPort.getCertificate("../ca-ws/src/test/resources/CXX_Service1.cer");
+		assertNull(certificateString);
+	}
 
 }

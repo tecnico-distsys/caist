@@ -1,18 +1,15 @@
 This is Certificate Authority Web Service implemented in Java.
 
-
 Setup before running CA-WS:
   1 - Create folder: "target/certificates/"
   2 - Create folder: "target/certificates/ca/"
   3 - Copy and paste CA certificate to this path: "target/certificates/ca/ca-certificate.pem.txt"
   4 - Copy users' certificates to "target/certificates/" (user T03 will have his certificates in target/certificates/T03)
-  
-
 
 The service is defined by the Java code with annotations
 (code-first approach, also called bottom-up approach).
 
-The service runs in a standalone HTTP server.
+The service runs in a stand-alone HTTP server.
 
 
 Instructions using Maven:
@@ -25,10 +22,10 @@ To run using exec plugin with default arguments:
   mvn exec:java
 
 To run with UDDI (uddiURL wsName wsURL):
-  mvn exec:java -Pexec.args="http://localhost:9090 CA http://localhost:8080/ca-ws/endpoint"
+  mvn exec:java -Pexec.args="http://localhost:9090 CA http://localhost:8080/ca-ws/endpoint target/certificates/"
 
 To run without UDDI (wsURL):
-  mvn exec:java -Pexec.args="http://localhost:8080/ca-ws/endpoint"
+  mvn exec:java -Pexec.args="http://localhost:8080/ca-ws/endpoint target/certificates/"
 
 
 When running, the web service awaits connections from clients.
