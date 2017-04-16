@@ -17,7 +17,7 @@ while read line; do
   password=${line##* }
   folderToZip=$folder/$username
 
-  echo "Zipping $folderToZip with passwor '$password'..."
+  echo "Zipping $folderToZip with password '$password'..."
   cd $folder
   zip -P $password -r $username.zip $username
   cd ..
