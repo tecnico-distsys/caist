@@ -5,11 +5,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import pt.ist.certlib.CertificateUtils;
+import pt.ulisboa.tecnico.sdis.cert.CertUtil;
 
 /**
  * Test suite
@@ -28,12 +29,14 @@ public class GetCertificateIT extends BaseIT {
 
 	/**
 	 * Check that CA correctly returns a known certificate.
+	 * @throws CertificateException 
 	 */
 	@Test
-	public void validateGetExistingCertificate() {
+	public void validateGetExistingCertificate() throws CertificateException {
 		String certificateString = CLIENT.getCertificate("TESTE_Mediator");
 		assertNotNull(certificateString);
-		assertTrue(CertificateUtils.getCertificateFromString(certificateString) instanceof Certificate);
+		Certificate certificate = CertUtil.getX509CertificateFromPEMString(certificateString);
+		assertNotNull(certificate);
 	}
 
 	/**
