@@ -43,7 +43,7 @@ public class BaseIT {
 	}
 
 	@AfterClass
-	public static void cleanup() {
+	public static void oneTimeCleanup() {
 	}
 
 }

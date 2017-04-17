@@ -4,10 +4,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.sdis.cert.CertUtil;
@@ -22,14 +23,17 @@ public class GetCertificateIT extends BaseIT {
 	 * folder containing TESTE certificates.
 	 */
 
-	@Before
-	public void setUp() {
+	private static Certificate caCertificate;
 
+	@BeforeClass
+	public static void oneTimeSetUp() throws FileNotFoundException, CertificateException {
+		caCertificate = CertUtil.getX509CertificateFromFile("../ca-ws/src/test/resources/ca/ca-certificate.pem.txt");
 	}
 
 	/**
 	 * Check that CA correctly returns a known certificate.
-	 * @throws CertificateException 
+	 * 
+	 * @throws CertificateException
 	 */
 	@Test
 	public void validateGetExistingCertificate() throws CertificateException {
@@ -37,6 +41,7 @@ public class GetCertificateIT extends BaseIT {
 		assertNotNull(certificateString);
 		Certificate certificate = CertUtil.getX509CertificateFromPEMString(certificateString);
 		assertNotNull(certificate);
+		assertTrue(CertUtil.verifySignedCertificate(certificate, caCertificate));
 	}
 
 	/**

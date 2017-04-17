@@ -6,10 +6,6 @@ import static org.junit.Assert.fail;
 
 import javax.xml.registry.JAXRException;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import mockit.Expectations;
@@ -29,28 +25,6 @@ public class CAClientIT {
 	private static final String uddiURL = "http://mockhost:9090";
 	private static final String wsName = "CreditCard";
 	private static final String wsURL = "http://mockhost:8080/cc-ws/endpoint";
-
-	// one-time initialization and clean-up
-
-	@BeforeClass
-	public static void oneTimeSetUp() {
-	}
-
-	@AfterClass
-	public static void oneTimeTearDown() {
-	}
-
-	// members
-
-	// initialization and clean-up for each test
-
-	@Before
-	public void setUp() {
-	}
-
-	@After
-	public void tearDown() {
-	}
 
 	// tests
 	// assertEquals(expected, actual);

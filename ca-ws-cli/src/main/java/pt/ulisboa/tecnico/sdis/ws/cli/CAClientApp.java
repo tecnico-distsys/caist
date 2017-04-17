@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class CAClientApp {
-	
+
 	private static final String APP_NAME = "ca-ws-cli";
 
 	public static void main(String[] args) throws Exception {
@@ -49,7 +49,7 @@ public class CAClientApp {
 
 			if ("QUIT".equalsIgnoreCase(commandArgs[0]) || "Q".equalsIgnoreCase(commandArgs[0]))
 				break;
-			
+
 			if (commandArgs.length <= 1)
 				continue;
 
@@ -63,22 +63,22 @@ public class CAClientApp {
 						String fileName = certName + ".cer";
 						System.out.printf("Writing to file %s%n", fileName);
 						writeFile(fileName, result);
-					
-					} catch(Exception e) {
+
+					} catch (Exception e) {
 						String message = e.getMessage();
 						message = (message == null ? "" : message);
 						System.out.printf("Error: %s %s%n", e.getClass().getSimpleName(), message);
 					}
 				}
 			}
-		} while(true);
-		
+		} while (true);
+
 		keyboardSc.close();
 	}
 
 	private static void writeFile(String fileName, String result) throws IOException {
 		BufferedWriter bw = new BufferedWriter(new FileWriter(fileName));
-		
+
 		bw.write(result);
 		bw.close();
 	}

@@ -102,11 +102,7 @@ public class CAClient implements CA {
 
 	@Override
 	public String getCertificate(String certificateName) {
-			return port.getCertificate(certificateName);
+		return port.getCertificate(certificateName);
 	}
-
-	
-
-	
 
 }
