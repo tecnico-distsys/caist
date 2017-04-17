@@ -13,7 +13,12 @@ public class CAPortImpl implements CA {
 	/** Certificates folder. */
 	private File certFolder;
 
-	/** Constructor. */
+	/** Constructor from folder path. */
+	public CAPortImpl(String certFolderPath) {
+		this(new File(certFolderPath));
+	}
+
+	/** Constructor from folder object. */
 	public CAPortImpl(File certFolder) {
 		this.certFolder = certFolder;
 
@@ -25,7 +30,7 @@ public class CAPortImpl implements CA {
 		} else {
 			String[] filesInCertificateFolder = certFolder.list();
 			CAEndpointManager.LOGGER
-					.info("Found " + filesInCertificateFolder.length + " certificates in " + certFolder + ".");
+					.info("Found " + filesInCertificateFolder.length + " items in " + certFolder + ".");
 		}
 	}
 
@@ -76,15 +81,23 @@ public class CAPortImpl implements CA {
 		String fileName = certificateName + ".cer";
 
 		File certSubFolder = new File(certFolder, folderName);
+		if (!certSubFolder.exists() || !certSubFolder.isDirectory()) {
+			CAEndpointManager.LOGGER.fine("Subfolder does not exist or is not a folder.");
+			CAEndpointManager.LOGGER.fine("Try with lowercase.");
+			certSubFolder = new File(certFolder, folderName.toLowerCase());
+		}
+		if (!certSubFolder.exists() || !certSubFolder.isDirectory()) {
+			CAEndpointManager.LOGGER.fine("Subfolder does not exist or is not a folder.");
+			return null;
+		}
+		
 		File certFile = new File(certSubFolder, fileName);
-
 		if (!certFile.exists() || certFile.isDirectory()) {
 			CAEndpointManager.LOGGER.fine("File does not exist or is a folder.");
 			return null;
 		}
 
 		try {
-			// read file
 			return readFile(certFile);
 		} catch (IOException e) {
 			CAEndpointManager.LOGGER.fine("Caught exception reading file " + e);
@@ -92,7 +105,7 @@ public class CAPortImpl implements CA {
 		}
 	}
 
-	// credits: http://stackoverflow.com/q/326390/129497
+	// readFile credits: http://stackoverflow.com/q/326390/129497
 	private String readFile(File file) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line = null;
