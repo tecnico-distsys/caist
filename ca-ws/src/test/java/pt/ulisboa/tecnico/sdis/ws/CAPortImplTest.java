@@ -20,7 +20,7 @@ import pt.ulisboa.tecnico.sdis.cert.CertUtil;
  */
 public class CAPortImplTest {
 
-	// members
+	// static members
 
 	private static CAPortImpl localPort;
 	private static Certificate caCertificate;

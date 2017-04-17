@@ -1,15 +1,29 @@
 This is Certificate Authority Web Service implemented in Java.
 
-Setup before running CA-WS:
-  1 - Create folder: "target/certificates/"
-  2 - Create folder: "target/certificates/ca/"
-  3 - Copy and paste CA certificate to this path: "target/certificates/ca/ca-certificate.pem.txt"
-  4 - Copy users' certificates to "target/certificates/" (user T03 will have his certificates in target/certificates/T03)
-
 The service is defined by the Java code with annotations
 (code-first approach, also called bottom-up approach).
-
 The service runs in a stand-alone HTTP server.
+
+The certificates to be served by the CA should be stored in an external folder
+with the following example structure:
+target/certificates/
+
+CA public-key certificate:
+target/certificates/ca/
+target/certificates/ca/ca-certificate.pem.txt
+
+User TESTE public-key certificates:
+target/certificates/teste/
+target/certificates/teste/TESTE_Mediator.cer
+
+User A22 certificates:
+target/certificates/a22/A22_*.cer
+
+User T03 certificates:
+target/certificates/t03/T03_*.cer
+
+Certificates like these can be generated with a script.
+See ../script/gen-certificates.sh for details.
 
 
 Instructions using Maven:
@@ -49,7 +63,5 @@ Check that the desired POM is selected and 'Finish'.
 
 
 --
-Revision date: 2017-04-16
+Revision date: 2017-04-17
 leic-sod@disciplinas.tecnico.ulisboa.pt
- 
-  
