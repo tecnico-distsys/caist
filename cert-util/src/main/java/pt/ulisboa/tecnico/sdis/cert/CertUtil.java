@@ -23,6 +23,9 @@ import java.security.cert.CertificateFactory;
 import java.util.Collection;
 
 public class CertUtil {
+	
+	/** print some error messages to standard error. */
+	public static boolean outputFlag = true;
 
 	/**
 	 * Returns the public key from a certificate.
@@ -246,8 +249,10 @@ public class CertUtil {
 			byte[] signatureResult = sig.sign();
 			return signatureResult;
 		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-			System.err.println("Caught exception while making signature: " + e);
-			System.err.println("Returning null.");
+			if (outputFlag) {
+				System.err.println("Caught exception while making signature: " + e);
+				System.err.println("Returning null.");
+			}
 			return null;
 		}
 	}
@@ -271,8 +276,10 @@ public class CertUtil {
 			sig.update(bytesToVerify);
 			return sig.verify(signature);
 		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-			System.err.println("Caught exception while verifying signature " + e);
-			System.err.println("Returning false.");
+			if (outputFlag) {
+				System.err.println("Caught exception while verifying signature " + e);
+				System.err.println("Returning false.");
+			}
 			return false;
 		}
 	}
@@ -307,8 +314,10 @@ public class CertUtil {
 			certificate.verify(caPublicKey);
 		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
 				| SignatureException e) {
-			System.err.println("Caught exception while verifying certificate with CA public key : " + e);
-			System.err.println("Returning false.");
+			if (outputFlag) {
+				System.err.println("Caught exception while verifying certificate with CA public key : " + e);
+				System.err.println("Returning false.");
+			}
 			return false;
 		}
 		return true;
