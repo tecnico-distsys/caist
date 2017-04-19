@@ -19,18 +19,17 @@ import org.junit.Test;
  */
 public class X509CertificateCheckTest extends BaseTest {
 
-	final static String CA_CERTIFICATE_FILE = "ca-certificate.pem.txt";
-	final static String CERTIFICATE_FILE = "example.cer";
+	final static String CA_CERTIFICATE = "ca.cer";
+	final static String CERTIFICATE = "example.cer";
 
 	/**
-	 * Check if the certificate was properly signed by CA.
+	 * Check if the certificate was properly signed by CA. Certificates are
+	 * loaded as files.
 	 */
 	@Test
 	public void testCertificateCheck() throws Exception {
-		System.out.println("TEST X509 certificate signature check");
-
-		Certificate certificate = CertUtil.getX509CertificateFromFile(new File(folder, CERTIFICATE_FILE));
-		Certificate caCertificate = CertUtil.getX509CertificateFromFile(new File(folder, CA_CERTIFICATE_FILE));
+		Certificate certificate = CertUtil.getX509CertificateFromResource(CERTIFICATE);
+		Certificate caCertificate = CertUtil.getX509CertificateFromResource(CA_CERTIFICATE);
 
 		boolean result = CertUtil.verifySignedCertificate(certificate, caCertificate);
 		assertTrue(result);
@@ -40,12 +39,12 @@ public class X509CertificateCheckTest extends BaseTest {
 	 * Check if the the verification detects a wrong CA certificate.
 	 */
 	@Test
-	public void testCertificateCheck2() throws Exception {
-		System.out.println("TEST X509 certificate signature check with wrong certificate");
+	public void testCertificateFromWrongCA() throws Exception {
+		Certificate certificate = CertUtil.getX509CertificateFromResource(CERTIFICATE);
+		// using wrong certificate here
+		Certificate caCertificate = CertUtil.getX509CertificateFromResource(CERTIFICATE);
 
-		Certificate certificate = CertUtil.getX509CertificateFromFile(new File(folder, CERTIFICATE_FILE));
-
-		boolean result = CertUtil.verifySignedCertificate(certificate, certificate);
+		boolean result = CertUtil.verifySignedCertificate(certificate, caCertificate);
 		assertFalse(result);
 	}
 

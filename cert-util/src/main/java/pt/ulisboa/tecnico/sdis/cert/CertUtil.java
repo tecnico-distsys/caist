@@ -23,7 +23,7 @@ import java.security.cert.CertificateFactory;
 import java.util.Collection;
 
 public class CertUtil {
-	
+
 	/** print some error messages to standard error. */
 	public static boolean outputFlag = true;
 
@@ -46,9 +46,13 @@ public class CertUtil {
 	 * @throws CertificateException
 	 */
 	public static Certificate getX509CertificateFromStream(InputStream in) throws CertificateException {
-		CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-		Certificate cert = certFactory.generateCertificate(in);
-		return cert;
+		try {
+			CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+			Certificate cert = certFactory.generateCertificate(in);
+			return cert;
+		} finally {
+			closeStream(in);
+		}
 	}
 
 	/**
@@ -80,6 +84,21 @@ public class CertUtil {
 	}
 
 	/**
+	 * Reads a certificate from a resource (included in the application
+	 * package).
+	 * 
+	 * @param certificateResourcePath
+	 * @return the Certificate
+	 * @throws IOException
+	 * @throws CertificateException
+	 */
+	public static Certificate getX509CertificateFromResource(String certificateResourcePath)
+			throws IOException, CertificateException {
+		InputStream is = getResourceAsStream(certificateResourcePath);
+		return getX509CertificateFromStream(is);
+	}
+
+	/**
 	 * Reads a certificate from a file.
 	 * 
 	 * @param certificateFile
@@ -96,7 +115,7 @@ public class CertUtil {
 	/**
 	 * Reads a certificate from a file path.
 	 * 
-	 * @param certificateFile
+	 * @param certificateFilePath
 	 * @return the Certificate
 	 * @throws FileNotFoundException
 	 * @throws CertificateException
@@ -142,10 +161,10 @@ public class CertUtil {
 	// (private) key store ----------------------------------------------------
 
 	/**
-	 * Reads a PrivateKey from a key store in given path.
+	 * Reads a PrivateKey from a key-store.
 	 * 
-	 * @param keyStoreFilePath
-	 *            path to key store file
+	 * @param keyStore
+	 *            key store
 	 * @param keyStorePassword
 	 *            key store password
 	 * @param keyAlias
@@ -156,14 +175,41 @@ public class CertUtil {
 	 * @throws FileNotFoundException
 	 * @throws KeyStoreException
 	 */
-	public static PrivateKey getPrivateKeyFromKeystore(String keyStoreFilePath, char[] keyStorePassword,
-			String keyAlias, char[] keyPassword)
-			throws FileNotFoundException, KeyStoreException, UnrecoverableKeyException {
-		return getPrivateKeyFromKeystore(new File(keyStoreFilePath), keyStorePassword, keyAlias, keyPassword);
+	public static PrivateKey getPrivateKeyFromKeyStore(String keyAlias, char[] keyPassword, KeyStore keystore)
+			throws KeyStoreException, UnrecoverableKeyException {
+		PrivateKey key;
+		try {
+			key = (PrivateKey) keystore.getKey(keyAlias, keyPassword);
+		} catch (NoSuchAlgorithmException e) {
+			throw new KeyStoreException(e);
+		}
+		return key;
 	}
 
 	/**
-	 * Reads a PrivateKey from a key-store.
+	 * Reads a PrivateKey from a key-store resource.
+	 * 
+	 * @param keyStoreResourcePath
+	 *            key store resource path
+	 * @param keyStorePassword
+	 *            key store password
+	 * @param keyAlias
+	 *            name of the key to retrieve
+	 * @param keyPassword
+	 *            key password
+	 * @return The PrivateKey
+	 * @throws FileNotFoundException
+	 * @throws KeyStoreException
+	 */
+	public static PrivateKey getPrivateKeyFromKeyStoreResource(String keyStoreResourcePath, char[] keyStorePassword,
+			String keyAlias, char[] keyPassword)
+			throws FileNotFoundException, KeyStoreException, UnrecoverableKeyException {
+		KeyStore keystore = readKeystoreFromResource(keyStoreResourcePath, keyStorePassword);
+		return getPrivateKeyFromKeyStore(keyAlias, keyPassword, keystore);
+	}
+
+	/**
+	 * Reads a PrivateKey from a key-store file.
 	 * 
 	 * @param keyStoreFile
 	 *            key store file
@@ -177,39 +223,72 @@ public class CertUtil {
 	 * @throws FileNotFoundException
 	 * @throws KeyStoreException
 	 */
-	public static PrivateKey getPrivateKeyFromKeystore(File keyStoreFile, char[] keyStorePassword, String keyAlias,
+	public static PrivateKey getPrivateKeyFromKeyStoreFile(File keyStoreFile, char[] keyStorePassword, String keyAlias,
 			char[] keyPassword) throws FileNotFoundException, KeyStoreException, UnrecoverableKeyException {
-		KeyStore keystore = readKeystoreFile(keyStoreFile, keyStorePassword);
-		PrivateKey key;
-		try {
-			key = (PrivateKey) keystore.getKey(keyAlias, keyPassword);
-		} catch (NoSuchAlgorithmException e) {
-			throw new KeyStoreException(e);
-		}
-		return key;
+		KeyStore keystore = readKeystoreFromFile(keyStoreFile, keyStorePassword);
+		return getPrivateKeyFromKeyStore(keyAlias, keyPassword, keystore);
 	}
 
 	/**
-	 * Reads a KeyStore from a file path.
+	 * Reads a PrivateKey from a key store in given file path.
 	 * 
 	 * @param keyStoreFilePath
 	 *            path to key store file
+	 * @param keyStorePassword
+	 *            key store password
+	 * @param keyAlias
+	 *            name of the key to retrieve
+	 * @param keyPassword
+	 *            key password
+	 * @return The PrivateKey
+	 * @throws FileNotFoundException
+	 * @throws KeyStoreException
+	 */
+	public static PrivateKey getPrivateKeyFromKeyStoreFile(String keyStoreFilePath, char[] keyStorePassword,
+			String keyAlias, char[] keyPassword)
+			throws FileNotFoundException, KeyStoreException, UnrecoverableKeyException {
+		return getPrivateKeyFromKeyStoreFile(new File(keyStoreFilePath), keyStorePassword, keyAlias, keyPassword);
+	}
+
+	/**
+	 * Reads a KeyStore from a stream.
+	 * 
+	 * @param keyStoreInputStream
+	 *            key store stream
 	 * @param keyStorePassword
 	 *            key store password
 	 * @return The read KeyStore
 	 * @throws FileNotFoundException
 	 * @throws KeyStoreException
 	 */
-	private static KeyStore readKeystoreFile(File keyStoreFile, char[] keyStorePassword)
-			throws FileNotFoundException, KeyStoreException {
-		FileInputStream fis = new FileInputStream(keyStoreFile);
+	private static KeyStore readKeystoreFromStream(InputStream keyStoreInputStream, char[] keyStorePassword)
+			throws KeyStoreException {
 		KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
 		try {
-			keystore.load(fis, keyStorePassword);
+			keystore.load(keyStoreInputStream, keyStorePassword);
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
 			throw new KeyStoreException("Could not load key store", e);
+		} finally {
+			closeStream(keyStoreInputStream);
 		}
 		return keystore;
+	}
+
+	/**
+	 * Reads a KeyStore from a resource.
+	 * 
+	 * @param keyStoreResourcePath
+	 *            key store resource path
+	 * @param keyStorePassword
+	 *            key store password
+	 * @return The read KeyStore
+	 * @throws FileNotFoundException
+	 * @throws KeyStoreException
+	 */
+	public static KeyStore readKeystoreFromResource(String keyStoreResourcePath, char[] keyStorePassword)
+			throws KeyStoreException {
+		InputStream is = getResourceAsStream(keyStoreResourcePath);
+		return readKeystoreFromStream(is, keyStorePassword);
 	}
 
 	/**
@@ -223,9 +302,26 @@ public class CertUtil {
 	 * @throws FileNotFoundException
 	 * @throws KeyStoreException
 	 */
-	public static KeyStore readKeystoreFile(String keyStoreFilePath, char[] keyStorePassword)
+	private static KeyStore readKeystoreFromFile(File keyStoreFile, char[] keyStorePassword)
 			throws FileNotFoundException, KeyStoreException {
-		return readKeystoreFile(new File(keyStoreFilePath), keyStorePassword);
+		FileInputStream fis = new FileInputStream(keyStoreFile);
+		return readKeystoreFromStream(fis, keyStorePassword);
+	}
+
+	/**
+	 * Reads a KeyStore from a file path.
+	 * 
+	 * @param keyStoreFilePath
+	 *            path to key store file
+	 * @param keyStorePassword
+	 *            key store password
+	 * @return The read KeyStore
+	 * @throws FileNotFoundException
+	 * @throws KeyStoreException
+	 */
+	public static KeyStore readKeystoreFromFile(String keyStoreFilePath, char[] keyStorePassword)
+			throws FileNotFoundException, KeyStoreException {
+		return readKeystoreFromFile(new File(keyStoreFilePath), keyStorePassword);
 	}
 
 	// digital signature ------------------------------------------------------
@@ -335,6 +431,27 @@ public class CertUtil {
 	 */
 	public static boolean verifySignedCertificate(Certificate certificate, Certificate caCertificate) {
 		return verifySignedCertificate(certificate, caCertificate.getPublicKey());
+	}
+
+	// resource stream helpers ------------------------------------------------
+
+	/** Method used to access resource. */
+	private static InputStream getResourceAsStream(String resourcePath) {
+		// uses current thread's class loader to also work correctly inside
+		// application servers
+		// reference: http://stackoverflow.com/a/676273/129497
+		InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
+		return is;
+	}
+
+	/** Do the best effort to close the stream, but ignore exceptions. */
+	private static void closeStream(InputStream in) {
+		try {
+			if (in != null)
+				in.close();
+		} catch (IOException e) {
+			// ignore
+		}
 	}
 
 }

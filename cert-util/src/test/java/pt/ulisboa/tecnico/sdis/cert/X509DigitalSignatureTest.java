@@ -61,9 +61,9 @@ import org.junit.Test;
  */
 public class X509DigitalSignatureTest extends BaseTest {
 
-	final static String CERTIFICATE_FILE = "example.cer";
+	final static String CERTIFICATE = "example.cer";
 
-	final static String KEYSTORE_FILE = "example.jks";
+	final static String KEYSTORE = "example.jks";
 	final static String KEYSTORE_PASSWORD = "1nsecure";
 
 	final static String KEY_ALIAS = "example";
@@ -94,14 +94,14 @@ public class X509DigitalSignatureTest extends BaseTest {
 
 		// make digital signature
 		System.out.println("Signing ...");
-		PrivateKey privateKey = CertUtil.getPrivateKeyFromKeystore(new File(folder, KEYSTORE_FILE),
+		PrivateKey privateKey = CertUtil.getPrivateKeyFromKeyStoreResource(KEYSTORE,
 				KEYSTORE_PASSWORD.toCharArray(), KEY_ALIAS, KEY_PASSWORD.toCharArray());
 		byte[] digitalSignature = CertUtil.makeDigitalSignature(SIGNATURE_ALGO, privateKey, plainBytes);
 		assertNotNull(digitalSignature);
 
 		// verify the signature
 		System.out.println("Verifying ...");
-		PublicKey publicKey = CertUtil.getX509CertificateFromFile(new File(folder, CERTIFICATE_FILE)).getPublicKey();
+		PublicKey publicKey = CertUtil.getX509CertificateFromResource(CERTIFICATE).getPublicKey();
 		boolean result = CertUtil.verifyDigitalSignature(SIGNATURE_ALGO, publicKey, plainBytes, digitalSignature);
 		assertTrue(result);
 
