@@ -7,7 +7,7 @@ import javax.jws.WebService;
 @WebService
 public interface CA {
 
-	@WebResult(name = "certificate")
+	@WebResult(name = "certificatePEMFormat")
 	String getCertificate(@WebParam(name = "certificateName") String certificateName);
 
 }
