@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -94,8 +93,8 @@ public class X509DigitalSignatureTest extends BaseTest {
 
 		// make digital signature
 		System.out.println("Signing ...");
-		PrivateKey privateKey = CertUtil.getPrivateKeyFromKeyStoreResource(KEYSTORE,
-				KEYSTORE_PASSWORD.toCharArray(), KEY_ALIAS, KEY_PASSWORD.toCharArray());
+		PrivateKey privateKey = CertUtil.getPrivateKeyFromKeyStoreResource(KEYSTORE, KEYSTORE_PASSWORD.toCharArray(),
+				KEY_ALIAS, KEY_PASSWORD.toCharArray());
 		byte[] digitalSignature = CertUtil.makeDigitalSignature(SIGNATURE_ALGO, privateKey, plainBytes);
 		assertNotNull(digitalSignature);
 

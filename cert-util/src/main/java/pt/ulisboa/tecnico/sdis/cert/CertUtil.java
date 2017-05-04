@@ -24,9 +24,6 @@ import java.util.Collection;
 
 public class CertUtil {
 
-	/** print some error messages to standard error. */
-	public static boolean outputFlag = true;
-
 	/**
 	 * Returns the public key from a certificate.
 	 * 
@@ -95,6 +92,8 @@ public class CertUtil {
 	public static Certificate getX509CertificateFromResource(String certificateResourcePath)
 			throws IOException, CertificateException {
 		InputStream is = getResourceAsStream(certificateResourcePath);
+		if (is == null)
+			throw new IllegalArgumentException("Resource not found at path " + certificateResourcePath);
 		return getX509CertificateFromStream(is);
 	}
 
@@ -181,6 +180,8 @@ public class CertUtil {
 		try {
 			key = (PrivateKey) keystore.getKey(keyAlias, keyPassword);
 		} catch (NoSuchAlgorithmException e) {
+			log("Caught exception while getting private key from keystore: " + e);
+			log("Throwing KeyStoreException.");
 			throw new KeyStoreException(e);
 		}
 		return key;
@@ -267,6 +268,8 @@ public class CertUtil {
 		try {
 			keystore.load(keyStoreInputStream, keyStorePassword);
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
+			log("Caught exception while reading keystore from stream: " + e);
+			log("Throwing KeyStoreException.");
 			throw new KeyStoreException("Could not load key store", e);
 		} finally {
 			closeStream(keyStoreInputStream);
@@ -288,6 +291,8 @@ public class CertUtil {
 	public static KeyStore readKeystoreFromResource(String keyStoreResourcePath, char[] keyStorePassword)
 			throws KeyStoreException {
 		InputStream is = getResourceAsStream(keyStoreResourcePath);
+		if (is == null)
+			throw new IllegalArgumentException("Resource not found at path " + keyStoreResourcePath);
 		return readKeystoreFromStream(is, keyStorePassword);
 	}
 
@@ -345,10 +350,8 @@ public class CertUtil {
 			byte[] signatureResult = sig.sign();
 			return signatureResult;
 		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-			if (outputFlag) {
-				System.err.println("Caught exception while making signature: " + e);
-				System.err.println("Returning null.");
-			}
+			log("Caught exception while making signature: " + e);
+			log("Returning null.");
 			return null;
 		}
 	}
@@ -372,10 +375,8 @@ public class CertUtil {
 			sig.update(bytesToVerify);
 			return sig.verify(signature);
 		} catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-			if (outputFlag) {
-				System.err.println("Caught exception while verifying signature " + e);
-				System.err.println("Returning false.");
-			}
+			log("Caught exception while verifying signature " + e);
+			log("Returning false.");
 			return false;
 		}
 	}
@@ -410,10 +411,8 @@ public class CertUtil {
 			certificate.verify(caPublicKey);
 		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
 				| SignatureException e) {
-			if (outputFlag) {
-				System.err.println("Caught exception while verifying certificate with CA public key : " + e);
-				System.err.println("Returning false.");
-			}
+			log("Caught exception while verifying certificate with CA public key : " + e);
+			log("Returning false.");
 			return false;
 		}
 		return true;
@@ -441,6 +440,7 @@ public class CertUtil {
 		// application servers
 		// reference: http://stackoverflow.com/a/676273/129497
 		InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
+		//InputStream is = CertUtil.class.getResourceAsStream(resourcePath);
 		return is;
 	}
 
@@ -450,8 +450,21 @@ public class CertUtil {
 			if (in != null)
 				in.close();
 		} catch (IOException e) {
+			log("Caught i/o exception while closing input stream : " + e);
+			log("Ignoring exception.");
 			// ignore
 		}
+	}
+
+	// log helpers -----------------------------------------------------------
+	
+	/** Option to print some error and warning messages to standard error. */
+	public static boolean logFlag = true;
+
+	/** Helper method to log error and warning messages. */
+	private static void log(String message) {
+		if (logFlag)
+			System.err.println(message);
 	}
 
 }

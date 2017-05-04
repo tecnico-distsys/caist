@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.sdis.cert;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.security.cert.Certificate;
 
 import org.junit.Test;
