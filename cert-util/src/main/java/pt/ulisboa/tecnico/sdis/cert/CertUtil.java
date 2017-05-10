@@ -411,7 +411,7 @@ public class CertUtil {
 			certificate.verify(caPublicKey);
 		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
 				| SignatureException e) {
-			log("Caught exception while verifying certificate with CA public key : " + e);
+			log("Caught exception while verifying certificate with CA public key: " + e);
 			log("Returning false.");
 			return false;
 		}
@@ -450,7 +450,7 @@ public class CertUtil {
 			if (in != null)
 				in.close();
 		} catch (IOException e) {
-			log("Caught i/o exception while closing input stream : " + e);
+			log("Caught i/o exception while closing input stream: " + e);
 			log("Ignoring exception.");
 			// ignore
 		}

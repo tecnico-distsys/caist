@@ -8,7 +8,7 @@ import java.security.PrivateKey;
 import org.junit.Test;
 
 /**
- * Test suite for keystore methods.
+ * Test suite for key store methods.
  */
 public class KeyStoreTest extends BaseTest {
 
@@ -42,4 +42,10 @@ public class KeyStoreTest extends BaseTest {
 		CertUtil.readKeystoreFromResource("notthere", KEYSTORE_PASSWORD.toCharArray());
 	}
 
+	@Test
+	public void testReadKeystoreFromResourceAbsolutePath() throws Exception {
+		KeyStore keyStore = CertUtil.readKeystoreFromResource("/" + KEYSTORE, KEYSTORE_PASSWORD.toCharArray());
+		assertNotNull(keyStore);
+	}
+	
 }
