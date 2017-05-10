@@ -93,7 +93,7 @@ public class CertUtil {
 			throws IOException, CertificateException {
 		InputStream is = getResourceAsStream(certificateResourcePath);
 		if (is == null)
-			throw new IllegalArgumentException("Resource not found at path " + certificateResourcePath);
+			throw new IllegalArgumentException("Certificate resource not found at path " + certificateResourcePath);
 		return getX509CertificateFromStream(is);
 	}
 
@@ -292,7 +292,7 @@ public class CertUtil {
 			throws KeyStoreException {
 		InputStream is = getResourceAsStream(keyStoreResourcePath);
 		if (is == null)
-			throw new IllegalArgumentException("Resource not found at path " + keyStoreResourcePath);
+			throw new IllegalArgumentException("Key store resource not found at path " + keyStoreResourcePath);
 		return readKeystoreFromStream(is, keyStorePassword);
 	}
 
