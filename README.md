@@ -4,7 +4,7 @@
 
 CAIST is a a simplified certification authority SOAP web service.
 
-CAIST is implemented in the Java programming language using the JAX-WS library (Java API for XML Web Services.
+CAIST is implemented in the Java programming language using the JAX-WS library (Java API for XML Web Services).
 
 
 ## Getting Started
@@ -36,7 +36,7 @@ mvn -version
 You can find instructions for each component in their folder:
 * [cert-util](cert-util/)
 * [ca-ws](ca-ws/)
-* [ca-ws-cli](ca-ws-cli/).
+* [ca-ws-cli](ca-ws-cli/)
 
 <!--
 mention compilation with super POM
