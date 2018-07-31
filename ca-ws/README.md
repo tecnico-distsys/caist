@@ -37,7 +37,7 @@ Certificates like these can be generated with a script.
 See [gen-certificates.sh](/script/gen-certificates.sh) for details.
 
 
-## Instructions using Maven:
+## Instructions using Maven
 
 To compile:
 
@@ -76,7 +76,7 @@ To call the service you will need a web service client,
 including code generated from the WSDL.
 
 
-## To configure the project in Eclipse:
+### To configure the project in Eclipse
 
 'File', 'Import...', 'Maven'-'Existing Maven Projects'.
 'Browse' to the project base folder.
