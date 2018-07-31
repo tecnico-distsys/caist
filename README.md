@@ -88,7 +88,7 @@ We use [SemVer](http://semver.org/) for versioning.
 ## Authors
 
 * **Miguel L. Pardal** - *structure and interfaces* - [miguelpardal](https://github.com/miguelpardal)
-* **David R. Matos** - *server implementation and scripts* - [miguelpardal](https://github.com/miguelpardal)
+* **David R. Matos** - *server implementation and scripts* - [davidmatos](https://github.com/davidmatos)
 
 See also the list of [contributors](https://github.com/tecnico-distsys/caist/contributors) who participated in this project.
 
