@@ -16,18 +16,48 @@ CAIST is composed of 3 modules:
 
 There are also bash scripts to generate the required keys and certificates.
 
+### Definitions
+
+An **X509 Certificate** is a type of public key in a public/private key pair. 
+These key pairs can be used for different things, like encryption via SSL, or for identification. 
+SSL Certificates are a type of X509 certificate
+
+A **Java KeyStore (JKS)** is a repository of security certificates 
+– either authorization certificates or public key certificates – 
+plus corresponding private keys, used for instance in SSL encryption. 
+
+### Relevant tools
+
+**keytool**
+The keytool command is a key and certificate management utility included with the JDK. 
+It enables users to administer their own public/private key pairs and associated certificates 
+for use in self-authentication (where the user authenticates himself or herself to other users and services) or 
+data integrity and authentication services, using digital signatures.
+
+**OpenSSL**
+OpenSSL is a software library for applications that secure communications over computer networks.
+
+The openssl binary (usually /usr/bin/openssl on Linux) is an entry point for many functions,
+also related to digital certificate management.
+
 
 ### Prerequisites
 
 CAIST requires Java Developer Kit 8 running on Linux, Windows or Mac.
 Maven 3 is also required.
 
-To confirm that you have it installed, open a terminal and type:
+OpenSSL is required for key generation scripts.
+
+To confirm that you have the required tools installed, open a terminal and type:
 
 ```
 javac -version
 
 mvn -version
+
+keytool
+
+openssl version
 ```
 
 
