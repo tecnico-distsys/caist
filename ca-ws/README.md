@@ -37,7 +37,7 @@ Certificates like these can be generated with a script.
 See [gen-certificates.sh](/script/gen-certificates.sh) for details.
 
 
-##Instructions using Maven:
+## Instructions using Maven:
 
 To compile:
 
