@@ -4,8 +4,8 @@
 
 This is a Java library that helps in the use of Public-Key Certificates in X.509 format.
 
-The [code](/src/main/java/) of the library is in the source folder.
-The [tests](/src/test/java/) use the library for signing and verifying.
+The [code](src/main/java/) of the library is in the source folder.
+The [tests](src/test/java/) use the library for signing and verifying.
 
 The set of functionalities available in Java for using X.509 certificates is incomplete, so a set of OpenSSL [scripts](/script/) are also necessary that run on Linux.
 
