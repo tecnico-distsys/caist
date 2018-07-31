@@ -33,7 +33,14 @@ mvn -version
 
 ### Installing
 
-You can find instructions for each component in their folder: [cert-util](cert-util/), [ca-ws](ca-ws/), [ca-ws-cli](ca-ws-cli/).
+You can find instructions for each component in their folder:
+* [cert-util](cert-util/)
+* [ca-ws](ca-ws/)
+* [ca-ws-cli](ca-ws-cli/).
+
+<!--
+mention compilation with super POM
+-->
 
 <!--
 ## Running the tests
